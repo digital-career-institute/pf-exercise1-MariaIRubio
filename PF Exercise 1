@@ -1,0 +1,138 @@
+CREATE DATABALE PF_exercise1;
+USE PF_exercise1;
+
+1. Create the Departments table- colums -> department id,department name(should not be null),location
+
+
+CREATE TABLE Departments (
+	id INT PRIMARY KEY AUTO_INCREMENT, 
+	name VARCHAR(100) NOT NULL, 
+	location VARCHAR(255)
+	);
+
+
+DESCRIBE Departments;
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| id       | int          | NO   | PRI | NULL    | auto_increment |
+| name     | varchar(100) | NO   |     | NULL    |                |
+| location | varchar(255) | YES  |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+
+
+2. Create the Employees table: colum: employee id , employee name(should not be null) and one foreign key that is department id from department table
+
+
+CREATE TABLE Employees (
+	id INT PRIMARY KEY, 
+	name VARCHAR(255) NOT NULL, 
+	departmentId INT, 
+	FOREIGN KEY (departmentId) REFERENCES Departments(id)
+	);
+
+
+DESCRIBE Employees;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| id           | int          | NO   | PRI | NULL    |       |
+| name         | varchar(255) | NO   |     | NULL    |       |
+| departmentId | int          | YES  | MUL | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+
+3. Populate the Departments table with some sample data:
+
+INSERT INTO Departments (name, location) VALUES 
+	('HR', 'New York'), 
+	('Sales', 'Chicago'), 
+	('Accounting', 'Chicago');
+
+
+SELECT * FROM Departments;
++----+------------+----------+
+| id | name       | location |
++----+------------+----------+
+|  1 | HR         | New York |
+|  2 | Sales      | Chicago  |
+|  3 | Accounting | Chicago  |
++----+------------+----------+
+
+4. Populate the Employees table with sample data:
+
+INSERT INTO Employees VALUES 
+	(101, 'Pam Bisley', 2), 
+	(100, 'Michael Brown', 2), 
+	(103, 'Kevin Malone', 3), 
+	(102, 'Tobias Friedrichson', 1);
+
+SELECT * FROM Employees;
++-----+---------------------+--------------+
+| id  | name                | departmentId |
++-----+---------------------+--------------+
+| 100 | Michael Brown       |            2 |
+| 101 | Pam Bisley          |            2 |
+| 102 | Tobias Friedrichson |            1 |
+| 103 | Kevin Malone        |            3 |
++-----+---------------------+--------------+
+
+5. Add a new department called 'IT' in the Departments table and assign an employee (e.g., EmployeeID 106, 'David Wilson') to this department in the Employees table.
+
+INSERT INTO Departments (name, location) VALUES ('IT', 'New York');
+
+INSERT INTO Employees VALUES (106, 'David Wilson', 4);
+
+SELECT * FROM Employees;
++-----+---------------------+--------------+
+| id  | name                | departmentId |
++-----+---------------------+--------------+
+| 100 | Michael Brown       |            2 |
+| 101 | Pam Bisley          |            2 |
+| 102 | Tobias Friedrichson |            1 |
+| 103 | Kevin Malone        |            3 |
+| 106 | David Wilson        |            4 |
++-----+---------------------+--------------+
+
+
+SELECT * FROM Employees LEFT JOIN Departments ON Employees.departmentId = Departments.id;
++-----+---------------------+--------------+------+------------+----------+
+| id  | name                | departmentId | id   | name       | location |
++-----+---------------------+--------------+------+------------+----------+
+| 100 | Michael Brown       |            2 |    2 | Sales      | Chicago  |
+| 101 | Pam Bisley          |            2 |    2 | Sales      | Chicago  |
+| 102 | Tobias Friedrichson |            1 |    1 | HR         | New York |
+| 103 | Kevin Malone        |            3 |    3 | Accounting | Chicago  |
+| 106 | David Wilson        |            4 |    4 | IT         | New York |
++-----+---------------------+--------------+------+------------+----------+
+
+6. Update the location of the 'HR' department from 'New York' to 'Chicago'.
+
+UPDATE Departments SET location = 'Chicago' WHERE name = 'HR';
+
+SELECT * FROM Employees RIGHT JOIN Departments ON Employees.departmentId = Departments.id;
++------+---------------------+--------------+----+------------+----------+
+| id   | name                | departmentId | id | name       | location |
++------+---------------------+--------------+----+------------+----------+
+|  102 | Tobias Friedrichson |            1 |  1 | HR         | Chicago  |
+|  100 | Michael Brown       |            2 |  2 | Sales      | Chicago  |
+|  101 | Pam Bisley          |            2 |  2 | Sales      | Chicago  |
+|  103 | Kevin Malone        |            3 |  3 | Accounting | Chicago  |
+|  106 | David Wilson        |            4 |  4 | IT         | New York |
++------+---------------------+--------------+----+------------+----------+
+
+7. Delete the employee named 'Michael Brown' from the Employees table.
+
+DELETE FROM Employees WHERE name = 'Michael Brown';
+
+
+SELECT * FROM Employees RIGHT JOIN Departments ON Employees.departmentId = Departments.id;
++------+---------------------+--------------+----+------------+----------+
+| id   | name                | departmentId | id | name       | location |
++------+---------------------+--------------+----+------------+----------+
+|  102 | Tobias Friedrichson |            1 |  1 | HR         | Chicago  |
+|  101 | Pam Bisley          |            2 |  2 | Sales      | Chicago  |
+|  103 | Kevin Malone        |            3 |  3 | Accounting | Chicago  |
+|  106 | David Wilson        |            4 |  4 | IT         | New York |
++------+---------------------+--------------+----+------------+----------+
+
+
